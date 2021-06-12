@@ -3,6 +3,7 @@ import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as cr from "@aws-cdk/custom-resources";
 import path from "path";
+import * as apiGateway from "@aws-cdk/aws-apigateway";
 
 require("dotenv").config();
 
@@ -56,9 +57,18 @@ export class FamilyAllowanceBackend extends cdk.Construct {
 
         // lambdas -----------------------------------------------------------------------------------------------------
         const setupAdminUserLambda = createLambda({resourceName: "setupAdminUser"});
+        const signinLambda = createLambda({
+            resourceName: "signin",
+            environment: {
+                TABLE_NAME: tableName,
+                JWT_SECRET: process.env.JWT_SECRET,
+                CRYPTO_SALT: process.env.SALT
+            }
+        });
 
         // table access ------------------------------------------------------------------------------------------------
         familyAllowanceTable.grantReadWriteData(setupAdminUserLambda);
+        familyAllowanceTable.grantReadData(signinLambda);
 
         // set up initial admin user on initialization -----------------------------------------------------------------
         const setupAdminProvider = new cr.Provider(this, "setupAdminProvider", {
@@ -74,5 +84,25 @@ export class FamilyAllowanceBackend extends cdk.Construct {
                 salt: process.env.SALT || "defaultSalt02oxljfnbvosufn"
             }
         });
+
+        // api gateway -------------------------------------------------------------------------------------------------
+        const api = new apiGateway.RestApi(
+            this,
+            "FamilyAllowanceApi",
+            {
+                restApiName: "Family Allowance API",
+                defaultCorsPreflightOptions: {
+                    allowOrigins: apiGateway.Cors.ALL_ORIGINS,
+                    allowCredentials: true,
+                    allowMethods: apiGateway.Cors.ALL_METHODS,
+                    disableCache: true
+                }
+            }
+        );
+
+        // signin ------------------------------------------------------------------------------------------------------
+        const signin = api.root.addResource("signin");
+        const signinUserIntegration = new apiGateway.LambdaIntegration(signinLambda);
+        signin.addMethod("POST", signinUserIntegration);
     }
 }
