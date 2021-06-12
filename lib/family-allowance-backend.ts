@@ -13,6 +13,7 @@ export class FamilyAllowanceBackend extends cdk.Construct {
 
         // db ----------------------------------------------------------------------------------------------------------
         const tableName = "FamilyAllowanceTable";
+
         const familyAllowanceTable = new dynamodb.Table(this, tableName, {
             tableName,
             partitionKey: {
@@ -57,6 +58,7 @@ export class FamilyAllowanceBackend extends cdk.Construct {
 
         // lambdas -----------------------------------------------------------------------------------------------------
         const setupAdminUserLambda = createLambda({resourceName: "setupAdminUser"});
+
         const signinLambda = createLambda({
             resourceName: "signin",
             environment: {
@@ -68,14 +70,18 @@ export class FamilyAllowanceBackend extends cdk.Construct {
 
         const signoutLambda = createLambda({resourceName: "signout"});
 
+        const getAccessTokenLambda = createLambda({
+            resourceName: "getAccessToken",
+            environment: {JWT_SECRET: process.env.JWT_SECRET}
+        });
+
         // table access ------------------------------------------------------------------------------------------------
         familyAllowanceTable.grantReadWriteData(setupAdminUserLambda);
+
         familyAllowanceTable.grantReadData(signinLambda);
 
         // set up initial admin user on initialization -----------------------------------------------------------------
-        const setupAdminProvider = new cr.Provider(this, "setupAdminProvider", {
-            onEventHandler: setupAdminUserLambda
-        });
+        const setupAdminProvider = new cr.Provider(this, "setupAdminProvider", {onEventHandler: setupAdminUserLambda});
 
         new cdk.CustomResource(this, "SetupAdminResource", {
             serviceToken: setupAdminProvider.serviceToken,
@@ -111,5 +117,10 @@ export class FamilyAllowanceBackend extends cdk.Construct {
         const signout = api.root.addResource("signout");
         const signoutIntegration = new apiGateway.LambdaIntegration(signoutLambda);
         signout.addMethod("GET", signoutIntegration);
+
+        // get access token --------------------------------------------------------------------------------------------
+        const token = api.root.addResource("token");
+        const getAccessTokenIntegration = new apiGateway.LambdaIntegration(getAccessTokenLambda);
+        token.addMethod("GET", getAccessTokenIntegration);
     }
 }
