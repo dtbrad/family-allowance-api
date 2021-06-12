@@ -1,0 +1,134 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "arrow-body-style": ["error", "never"],
+        "arrow-parens": ["error", "always"],
+        "arrow-spacing": "error",
+        "array-bracket-spacing": "error",
+        "brace-style": "error",
+        "camelcase": "error",
+        "class-methods-use-this": 0,
+        "comma-spacing": "error",
+        "comma-style": "error",
+        "computed-property-spacing": "error",
+        "curly": "error",
+        "dot-notation": "error",
+        "eol-last": "error",
+        "eqeqeq": "error",
+        "func-call-spacing": "error",
+        "func-names": 0,
+        "function-paren-newline": "error",
+        "guard-for-in": "error",
+        "handle-callback-err": "error",
+        "import/prefer-default-export": 0,
+        "import/no-commonjs": 0,
+        "import/no-nodejs-modules": 0,
+        "indent": ["error", 4, {
+            "SwitchCase": 1
+        }],
+        "key-spacing": "error",
+        "keyword-spacing": "error",
+        "max-len": ["error", {
+            "code": 120,
+            "ignoreStrings": true,
+            "ignoreTemplateLiterals": true,
+            "ignoreUrls": true
+        }],
+        "max-params": 0,
+        "multiline-ternary": 0,
+        "new-cap": 0,
+        "new-parens": "error",
+        "newline-per-chained-call": "error",
+        "no-alert": "error",
+        "no-bitwise": "error",
+        "no-case-declarations": "error",
+        "no-console": 0,
+        "no-continue": "error",
+        "no-else-return": "error",
+        "no-extra-bind": "error",
+        "no-floating-decimal": "error",
+        "no-lonely-if": "error",
+        "no-loop-func": "error",
+        "no-multi-assign": "error",
+        "no-multi-spaces": "error",
+        "no-multiple-empty-lines": "error",
+        "no-nested-ternary": "error",
+        "no-param-reassign": [2, {
+            "props": false
+        }],
+        "no-plusplus": "error",
+        "no-return-assign": 0,
+        "no-shadow": 0,
+        "no-throw-literal": "error",
+        "no-trailing-spaces": "error",
+        "no-underscore-dangle": 0,
+        "no-unneeded-ternary": "error",
+        "no-unsafe-negation": "error",
+        "no-unused-vars": ["warn", {
+            "ignoreRestSiblings": true
+        }],
+        "no-use-before-define": "error",
+        "no-whitespace-before-property": "error",
+        "object-curly-spacing": ["warn", "never"],
+        "one-var": ["error", "never"],
+        "prefer-arrow-callback": 0,
+        "quotes": ["error", "double", {
+            "allowTemplateLiterals": true
+        }],
+        "radix": "error",
+        "react/prop-types": 0,
+        "semi": "error",
+        "semi-spacing": "error",
+        "semi-style": "error",
+        "space-before-blocks": "error",
+        "space-before-function-paren": ["error", {
+            "named": "never",
+            "anonymous": "always",
+            "asyncArrow": "always"
+        }],
+        "space-in-parens": ["error", "never"],
+        "space-infix-ops": "error",
+        "space-unary-ops": "error",
+        "spaced-comment": "error",
+        "strict": "error",
+        "switch-colon-spacing": "error",
+        "valid-jsdoc": ["error", {
+            "requireReturn": false
+        }],
+        "wrap-iife": "error",
+        "comma-dangle": ["error", "never"],
+        "@typescript-eslint/no-unused-vars": ["error", {
+            "args": "none"
+        }],
+        "@typescript-eslint/type-annotation-spacing": ["warn", {
+            "before": false,
+            "after": true,
+            "overrides": {
+                "colon": {
+                    "before": false,
+                    "after": true
+                    }
+                }
+            }
+        ]
+    }
+}

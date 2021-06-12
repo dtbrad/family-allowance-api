@@ -1,0 +1,35 @@
+{
+  "name": "family-allowance-api",
+  "version": "1.0.0",
+  "scripts": {
+    "synth": "cdk synth --app 'ts-node deploy' > template.yaml",
+    "build": "ts-node buildLambdas.ts",
+    "deploy": "cdk deploy --app 'ts-node deploy'",
+    "destroy": "cdk destroy --app 'ts-node deploy'",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "main": "index.js",
+  "repository": "https://github.com/dtbrad/family-allowance-api.git",
+  "author": "Daniel Brad",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-cdk/aws-dynamodb": "1.108.1",
+    "@aws-cdk/core": "1.108.1",
+    "aws-cdk": "1.108.1",
+    "dotenv": "^8.2.0",
+    "esbuild": "^0.11.15"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.76",
+    "@types/node": "^14.14.41",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.25.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}
