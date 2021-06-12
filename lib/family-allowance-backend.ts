@@ -66,6 +66,8 @@ export class FamilyAllowanceBackend extends cdk.Construct {
             }
         });
 
+        const signoutLambda = createLambda({resourceName: "signout"});
+
         // table access ------------------------------------------------------------------------------------------------
         familyAllowanceTable.grantReadWriteData(setupAdminUserLambda);
         familyAllowanceTable.grantReadData(signinLambda);
@@ -104,5 +106,10 @@ export class FamilyAllowanceBackend extends cdk.Construct {
         const signin = api.root.addResource("signin");
         const signinUserIntegration = new apiGateway.LambdaIntegration(signinLambda);
         signin.addMethod("POST", signinUserIntegration);
+
+        // signout -----------------------------------------------------------------------------------------------------
+        const signout = api.root.addResource("signout");
+        const signoutIntegration = new apiGateway.LambdaIntegration(signoutLambda);
+        signout.addMethod("GET", signoutIntegration);
     }
 }
