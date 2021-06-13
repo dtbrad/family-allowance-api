@@ -1,9 +1,9 @@
-import * as cdk from "@aws-cdk/core";
+import * as apiGateway from "@aws-cdk/aws-apigateway";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as lambda from "@aws-cdk/aws-lambda";
+import * as cdk from "@aws-cdk/core";
 import * as cr from "@aws-cdk/custom-resources";
 import path from "path";
-import * as apiGateway from "@aws-cdk/aws-apigateway";
 
 require("dotenv").config();
 
@@ -75,6 +75,13 @@ export class FamilyAllowanceBackend extends cdk.Construct {
             environment: {JWT_SECRET: process.env.JWT_SECRET}
         });
 
+        const getUserSummaryLambda = createLambda({resourceName: "getUserSummary"});
+
+        const accessTokenAuthorizerLambda = createLambda({
+            resourceName: "accessTokenAuthorizer",
+            environment: {JWT_SECRET: process.env.JWT_SECRET}
+        });
+
         // table access ------------------------------------------------------------------------------------------------
         familyAllowanceTable.grantReadWriteData(setupAdminUserLambda);
 
@@ -108,6 +115,11 @@ export class FamilyAllowanceBackend extends cdk.Construct {
             }
         );
 
+        const authorizer = new apiGateway.TokenAuthorizer(this, "Authorizer", {
+            handler: accessTokenAuthorizerLambda,
+            resultsCacheTtl: cdk.Duration.seconds(0)
+        });
+
         // signin ------------------------------------------------------------------------------------------------------
         const signin = api.root.addResource("signin");
         const signinUserIntegration = new apiGateway.LambdaIntegration(signinLambda);
@@ -122,5 +134,12 @@ export class FamilyAllowanceBackend extends cdk.Construct {
         const token = api.root.addResource("token");
         const getAccessTokenIntegration = new apiGateway.LambdaIntegration(getAccessTokenLambda);
         token.addMethod("GET", getAccessTokenIntegration);
+
+        // standard user -----------------------------------------------------------------------------------------------
+        const users = api.root.addResource("users");
+
+        const user = users.addResource("{userId}");
+        const getUserIntegration = new apiGateway.LambdaIntegration(getUserSummaryLambda);
+        user.addMethod("GET", getUserIntegration, {authorizer});
     }
 }
