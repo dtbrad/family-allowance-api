@@ -85,10 +85,35 @@ export class FamilyAllowanceBackend extends cdk.Construct {
             environment: {JWT_SECRET: process.env.JWT_SECRET}
         });
 
-        // table access ------------------------------------------------------------------------------------------------
-        familyAllowanceTable.grantReadWriteData(setupAdminUserLambda);
+        const getUsersLambda = createLambda({
+            resourceName: "getUsers",
+            environment: {TABLE_NAME: tableName}
+        });
 
-        [signinLambda, getUserSummaryLambda].forEach((lambda) => familyAllowanceTable.grantReadData(lambda));
+        const createUserLambda = createLambda({
+            resourceName: "createUser",
+            environment: {TABLE_NAME: tableName, SALT: process.env.SALT}
+        });
+
+        const createTransactionsLambda = createLambda({
+            resourceName: "createTransactions",
+            environment: {TABLE_NAME: tableName},
+            options: {timeout: cdk.Duration.seconds(54)}
+        });
+
+        // table access ------------------------------------------------------------------------------------------------
+        [
+            setupAdminUserLambda,
+            createUserLambda,
+            createTransactionsLambda
+        ].forEach((lambda) => familyAllowanceTable.grantReadWriteData(lambda));
+
+
+        [
+            signinLambda,
+            getUserSummaryLambda,
+            getUsersLambda
+        ].forEach((lambda) => familyAllowanceTable.grantReadData(lambda));
 
         // set up initial admin user on initialization -----------------------------------------------------------------
         const setupAdminProvider = new cr.Provider(this, "setupAdminProvider", {onEventHandler: setupAdminUserLambda});
@@ -144,5 +169,23 @@ export class FamilyAllowanceBackend extends cdk.Construct {
         const user = users.addResource("{userId}");
         const getUserIntegration = new apiGateway.LambdaIntegration(getUserSummaryLambda);
         user.addMethod("GET", getUserIntegration, {authorizer});
+
+        // admin  ------------------------------------------------------------------------------------------------------
+        const admin = api.root.addResource("admin");
+
+        // admin users
+        const adminUsers = admin.addResource("users");
+        const getAdminUsersIntegration = new apiGateway.LambdaIntegration(getUsersLambda);
+        adminUsers.addMethod("GET", getAdminUsersIntegration, {authorizer});
+
+        // create user
+        const createUserIntegration = new apiGateway.LambdaIntegration(createUserLambda);
+        adminUsers.addMethod("POST", createUserIntegration, {authorizer});
+
+        // create transactions
+        const adminUser = adminUsers.addResource("{userId}");
+        const adminUserTransactions = adminUser.addResource("transactions", {});
+        const createMultipleTransactionsForUserIntegration = new apiGateway.LambdaIntegration(createTransactionsLambda);
+        adminUserTransactions.addMethod("POST", createMultipleTransactionsForUserIntegration, {authorizer});
     }
 }

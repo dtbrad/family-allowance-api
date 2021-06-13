@@ -1,5 +1,8 @@
 export {handler as accessTokenAuthorizerHandler} from "./accessTokenAuthorizer";
+export {handler as createTransactionsHandler} from "./createTransactions";
+export {handler as createUserHandler} from "./createUser";
 export {handler as getAccessTokenHandler} from "./getAccessToken";
+export {handler as getUsersHandler} from "./getUsers";
 export {handler as getUserSummaryHandler} from "./getUserSummary";
 export {handler as setupAdminUserHandler} from "./setupAdmin";
 export {handler as signinHandler} from "./signin";
