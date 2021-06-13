@@ -17,6 +17,8 @@
   "dependencies": {
     "@aws-cdk/aws-apigateway": "1.108.1",
     "@aws-cdk/aws-dynamodb": "1.108.1",
+    "@aws-cdk/aws-events": "1.108.01",
+    "@aws-cdk/aws-events-targets": "1.108.1",
     "@aws-cdk/core": "1.108.1",
     "aws-cdk": "1.108.1",
     "dotenv": "^8.2.0",

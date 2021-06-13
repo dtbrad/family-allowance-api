@@ -1,5 +1,7 @@
 import * as apiGateway from "@aws-cdk/aws-apigateway";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
+import * as events from "@aws-cdk/aws-events";
+import * as targets from "@aws-cdk/aws-events-targets";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as cdk from "@aws-cdk/core";
 import * as cr from "@aws-cdk/custom-resources";
@@ -101,11 +103,17 @@ export class FamilyAllowanceBackend extends cdk.Construct {
             options: {timeout: cdk.Duration.seconds(54)}
         });
 
+        const manageBalanceUpdatesLambda = createLambda({
+            resourceName: "manageBalanceUpdates",
+            environment: {TABLE_NAME: tableName}
+        });
+
         // table access ------------------------------------------------------------------------------------------------
         [
             setupAdminUserLambda,
             createUserLambda,
-            createTransactionsLambda
+            createTransactionsLambda,
+            manageBalanceUpdatesLambda
         ].forEach((lambda) => familyAllowanceTable.grantReadWriteData(lambda));
 
 
@@ -127,6 +135,13 @@ export class FamilyAllowanceBackend extends cdk.Construct {
                 salt: process.env.SALT || "defaultSalt02oxljfnbvosufn"
             }
         });
+
+        // scheduled events --------------------------------------------------------------------------------------------
+        const allowanceRule = new events.Rule(this, "AllowanceRule", {
+            schedule: events.Schedule.expression("cron(0 15 ? * * *)") // 7:00 PST (time in UTC)
+        });
+
+        allowanceRule.addTarget(new targets.LambdaFunction(manageBalanceUpdatesLambda));
 
         // api gateway -------------------------------------------------------------------------------------------------
         const api = new apiGateway.RestApi(

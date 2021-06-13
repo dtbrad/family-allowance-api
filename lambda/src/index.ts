@@ -4,6 +4,7 @@ export {handler as createUserHandler} from "./createUser";
 export {handler as getAccessTokenHandler} from "./getAccessToken";
 export {handler as getUsersHandler} from "./getUsers";
 export {handler as getUserSummaryHandler} from "./getUserSummary";
+export {handler as manageBalanceUpdatesHandler} from "./manageBalanceUpdates";
 export {handler as setupAdminUserHandler} from "./setupAdmin";
 export {handler as signinHandler} from "./signin";
 export {handler as signoutHandler} from "./signout";
