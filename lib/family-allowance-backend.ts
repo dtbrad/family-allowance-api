@@ -75,7 +75,10 @@ export class FamilyAllowanceBackend extends cdk.Construct {
             environment: {JWT_SECRET: process.env.JWT_SECRET}
         });
 
-        const getUserSummaryLambda = createLambda({resourceName: "getUserSummary"});
+        const getUserSummaryLambda = createLambda({
+            resourceName: "getUserSummary",
+            environment: {TABLE_NAME: tableName}
+        });
 
         const accessTokenAuthorizerLambda = createLambda({
             resourceName: "accessTokenAuthorizer",
@@ -85,7 +88,7 @@ export class FamilyAllowanceBackend extends cdk.Construct {
         // table access ------------------------------------------------------------------------------------------------
         familyAllowanceTable.grantReadWriteData(setupAdminUserLambda);
 
-        familyAllowanceTable.grantReadData(signinLambda);
+        [signinLambda, getUserSummaryLambda].forEach((lambda) => familyAllowanceTable.grantReadData(lambda));
 
         // set up initial admin user on initialization -----------------------------------------------------------------
         const setupAdminProvider = new cr.Provider(this, "setupAdminProvider", {onEventHandler: setupAdminUserLambda});
