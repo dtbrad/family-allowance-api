@@ -12,6 +12,7 @@ SALT=<salt value for password hashing>
 JWT_SECRET=<jwt secret key>
 ```
 To deploy from terminal:
+1. run `yarn` and `yarn build`
 1. run `cdk bootstrap` with your AWS account and region: `cdk bootstrap aws://123456789012/us-east-1`
 2. run `cdk deploy`
 
