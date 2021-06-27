@@ -1,10 +1,10 @@
 import * as AWS from "aws-sdk";
 import * as lambda from "aws-lambda";
-import generatePassword from "./helpers/generatePassword";
+import generatePassword from "./common/generatePassword";
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
-export const handler = async function setupAdmin(event: lambda.CloudFormationCustomResourceEventCommon): Promise<void> {
+async function setupAdminUser(event: lambda.CloudFormationCustomResourceEventCommon): Promise<void> {
     const {tableName, user, password, salt} = event.ResourceProperties;
     if (!user || !password || !salt) {
         return;
@@ -23,4 +23,6 @@ export const handler = async function setupAdmin(event: lambda.CloudFormationCus
             userId: user
         }
     }).promise();
-};
+}
+
+export const handler = setupAdminUser;

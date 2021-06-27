@@ -1,5 +1,5 @@
 import * as AWS from "aws-sdk";
-import createResponse from "./helpers/createResponse";
+import createResponse from "./common/createResponse";
 
 const TableName = process.env.TABLE_NAME;
 const dynamo = new AWS.DynamoDB.DocumentClient();

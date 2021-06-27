@@ -1,4 +1,4 @@
-import AWS from "aws-sdk";
+import * as AWS from "aws-sdk";
 import {TransactionsQueryParams} from "./TransactionQueryParams";
 
 const table = process.env.TABLE_NAME || "";

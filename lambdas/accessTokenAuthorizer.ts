@@ -1,13 +1,6 @@
-import {verify} from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 
 const secret = process.env.JWT_SECRET;
-
-interface Payload {
-    userId: string;
-    exp: string;
-    ia: string;
-    role: string;
-}
 
 interface IEvent {
     authorizationToken: string;
@@ -33,7 +26,12 @@ interface IAuthResponse {
     };
 }
 
-function generatePolicy(principalId: string, effect: string, resource: string, payload?: Payload): IAuthResponse {
+function generatePolicy(
+    principalId: string,
+    effect: string,
+    resource: string,
+    payload?: jwt.JwtPayload
+): IAuthResponse {
     const authResponse = {
         principalId,
         context: {
@@ -66,10 +64,10 @@ function generatePolicy(principalId: string, effect: string, resource: string, p
 }
 
 export const handler = async function accessTokenAuthorizer(event: IEvent) {
-    const jwt = event.authorizationToken?.split(" ")[1] || "nothing";
+    const token = event.authorizationToken?.split(" ")[1] || "nothing";
 
     try {
-        const payload = verify(jwt, secret) as Payload;
+        const payload = jwt.verify(token, secret) as jwt.JwtPayload;
 
         if (payload) {
             return generatePolicy("user", "Allow", event.methodArn, payload);

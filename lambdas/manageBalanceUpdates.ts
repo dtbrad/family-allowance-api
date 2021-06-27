@@ -1,5 +1,5 @@
 import * as AWS from "aws-sdk";
-import updateBalance from "./helpers/updateBalance";
+import updateBalance from "./common/updateBalance";
 
 const TableName = process.env.TABLE_NAME;
 const dynamo = new AWS.DynamoDB.DocumentClient();

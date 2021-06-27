@@ -1,6 +1,6 @@
 import * as AWS from "aws-sdk";
-import createResponse from "../helpers/createResponse";
-import getTransactionsWithPagination from "./getTransactionsWithPagination";
+import createResponse from "./common/createResponse";
+import getTransactionsWithPagination from "./common/getTransactionsWithPagination";
 
 const tableName = process.env.TABLE_NAME;
 const dynamo = new AWS.DynamoDB.DocumentClient();

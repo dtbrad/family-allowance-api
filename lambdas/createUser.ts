@@ -1,7 +1,7 @@
 import * as AWS from "aws-sdk";
 import {APIGatewayEvent} from "aws-lambda";
-import generatePassword from "./helpers/generatePassword";
-import createResponse from "./helpers/createResponse";
+import generatePassword from "./common/generatePassword";
+import createResponse from "./common/createResponse";
 
 const salt = process.env.SALT || "";
 const tableName = process.env.TABLE_NAME;

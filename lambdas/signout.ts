@@ -1,4 +1,4 @@
-import createResponse from "./helpers/createResponse";
+import createResponse from "./common/createResponse";
 
 export const handler = async function signout(event: AWSLambda.APIGatewayEvent) {
     const {origin} = event.headers;

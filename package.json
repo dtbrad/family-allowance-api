@@ -2,10 +2,7 @@
   "name": "family-allowance-api",
   "version": "1.0.0",
   "scripts": {
-    "synth": "cdk synth --app 'ts-node deploy' > template.yaml",
-    "build": "ts-node buildLambdas.ts",
-    "deploy": "cdk deploy --app 'ts-node deploy'",
-    "destroy": "cdk destroy --app 'ts-node deploy'",
+    "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk"
@@ -15,17 +12,22 @@
   "author": "Daniel Brad",
   "license": "MIT",
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "1.108.1",
-    "@aws-cdk/aws-dynamodb": "1.108.1",
-    "@aws-cdk/aws-events": "1.108.01",
-    "@aws-cdk/aws-events-targets": "1.108.1",
-    "@aws-cdk/core": "1.108.1",
-    "aws-cdk": "1.108.1",
+    "@aws-cdk/aws-apigateway": "1.110.0",
+    "@aws-cdk/aws-dynamodb": "1.110.0",
+    "@aws-cdk/aws-events": "1.110.0",
+    "@aws-cdk/aws-events-targets": "1.110.0",
+    "@aws-cdk/aws-lambda-nodejs": "1.110.0",
+    "@aws-cdk/core": "1.110.0",
+    "aws-cdk": "1.110.0",
+    "cookie": "^0.4.1",
     "dotenv": "^8.2.0",
-    "esbuild": "^0.11.15"
+    "esbuild": "^0.11.15",
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.76",
+    "@types/cookie": "^0.4.0",
+    "@types/jsonwebtoken": "^8.5.2",
     "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",

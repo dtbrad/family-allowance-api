@@ -1,5 +1,4 @@
 node_modules
 secrets
-bin
 cdk.out
 *.js

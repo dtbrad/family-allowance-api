@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 import {APIGatewayEvent} from "aws-lambda";
 import {createHmac} from "crypto";
 import * as AWS from "aws-sdk";
-import createResponse from "./helpers/createResponse";
+import createResponse from "./common/createResponse";
 
 const table = process.env.TABLE_NAME;
 const secret = process.env.JWT_SECRET;

@@ -2,12 +2,10 @@ import * as apiGateway from "@aws-cdk/aws-apigateway";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as events from "@aws-cdk/aws-events";
 import * as targets from "@aws-cdk/aws-events-targets";
-import * as lambda from "@aws-cdk/aws-lambda";
+import * as lambda from "@aws-cdk/aws-lambda-nodejs";
 import * as cdk from "@aws-cdk/core";
 import * as cr from "@aws-cdk/custom-resources";
-import path from "path";
-
-require("dotenv").config();
+import * as path from "path";
 
 export class FamilyAllowanceBackend extends cdk.Construct {
     constructor(scope: cdk.Construct, id: string) {
@@ -45,14 +43,13 @@ export class FamilyAllowanceBackend extends cdk.Construct {
         }
 
         const createLambda = ({resourceName, environment, options}: CreateLambdaParams) => (
-            new lambda.Function(
+            new lambda.NodejsFunction(
                 this,
                 resourceName,
                 {
-                    code: lambda.Code.fromAsset(path.resolve("lambda", "dist")),
-                    handler: `index.${resourceName}Handler`,
-                    runtime: lambda.Runtime.NODEJS_12_X,
+                    entry: path.resolve("lambdas", `${resourceName}.ts`),
                     environment,
+                    description: resourceName,
                     ...options
                 }
             )
@@ -131,14 +128,14 @@ export class FamilyAllowanceBackend extends cdk.Construct {
             properties: {
                 tableName,
                 user: process.env.USER_ID || "defaultAdminUser",
-                password: process.env.PASSWORD || "defaultPassword",
-                salt: process.env.SALT || "defaultSalt02oxljfnbvosufn"
+                password: process.env.PASSWORD || "badPassword",
+                salt: process.env.SALT || "defaultSaltThatYouShouldMakeBetter02oxljfnbefipefpeifevosufn"
             }
         });
 
         // scheduled events --------------------------------------------------------------------------------------------
         const allowanceRule = new events.Rule(this, "AllowanceRule", {
-            schedule: events.Schedule.expression("cron(0 15 ? * * *)") // 7:00 PST (time in UTC)
+            schedule: events.Schedule.expression("cron(0 15 ? * * *)") // 8:00 PST (time in UTC)
         });
 
         allowanceRule.addTarget(new targets.LambdaFunction(manageBalanceUpdatesLambda));

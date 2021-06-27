@@ -12,8 +12,6 @@ function calculateNextStartDate(timeString: string, sort: string) {
 
 export default async function getTransactionsWithPagination(queryArgs: TransactionsQueryParams) {
     const result = await getTransactions(queryArgs);
-    console.log({RESULT: result});
-
     const entries = result.Items.map((item) => ({
         date: item.SK,
         amount: item.amount,

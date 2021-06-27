@@ -1,15 +1,8 @@
-import cookieManager from "cookie";
-import jwt, {verify} from "jsonwebtoken";
-import createResponse from "./helpers/createResponse";
+import * as cookieManager from "cookie";
+import * as jwt from "jsonwebtoken";
+import createResponse from "./common/createResponse";
 
 const secret = process.env.JWT_SECRET;
-
-interface Payload {
-    userId: string;
-    exp: string;
-    ia: string;
-    role: string;
-}
 
 export const handler = async function getAccessToken(event: AWSLambda.APIGatewayEvent) {
     const {origin} = event.headers;
@@ -41,7 +34,7 @@ export const handler = async function getAccessToken(event: AWSLambda.APIGateway
 
     try {
         let accessToken;
-        const refreshTokenPayload = verify(refreshToken, secret) as Payload;
+        const refreshTokenPayload = jwt.verify(refreshToken, secret) as jwt.JwtPayload;
 
         if (refreshTokenPayload) {
             const {userId, role} = refreshTokenPayload;

@@ -49,7 +49,7 @@ export default async function updateBalance({
     try {
         await dynamo.transactWrite(params).promise();
     } catch (error) {
-        console.log({THE_ERROR: error});
+        console.log({error});
         throw new Error("Boom!!");
     }
 }
