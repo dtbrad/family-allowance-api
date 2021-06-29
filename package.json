@@ -5,7 +5,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "template": "cdk synth > template.yaml"
   },
   "main": "index.js",
   "repository": "https://github.com/dtbrad/family-allowance-api.git",
