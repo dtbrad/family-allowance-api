@@ -1,5 +1,6 @@
 import * as AWS from "aws-sdk";
 import createResponse from "./common/createResponse";
+import getTransactionsWithPagination from "./common/getTransactionsWithPagination";
 
 const TableName = process.env.TABLE_NAME;
 const dynamo = new AWS.DynamoDB.DocumentClient();
@@ -47,8 +48,19 @@ export const handler = async function createTransactions(event: AWSLambda.APIGat
             ReturnValues: "UPDATED_NEW"
         }).promise();
 
-        return createResponse(origin, {statusCode: 200, body: {total, transactionLength: transactions.length}});
+        const updatedTransactions = await getTransactionsWithPagination({
+            userId,
+            endDate: new Date().toISOString(),
+            sort: "desc",
+            limit: 10
+        });
 
+        const balance = await dynamo.get({
+            TableName,
+            Key: {PK: userId, SK: userId}
+        }).promise();
+
+        return createResponse(origin, {statusCode: 200, body: {userId, balance, transactions: updatedTransactions}});
 
     } catch (error) {
         if (error.code === "ConditionalCheckFailedException") {
