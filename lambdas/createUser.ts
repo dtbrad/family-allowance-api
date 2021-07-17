@@ -60,10 +60,25 @@ export const handler = async function createUser(event: APIGatewayEvent) {
             ConditionExpression: "attribute_not_exists(PK)"
         }).promise();
 
+        const allUserResult = await dynamo.scan({
+            TableName: tableName,
+            IndexName: "userIdIndex"
+        }).promise();
+
+
+        const users = allUserResult.Items.map((item) => ({
+            userId: item.userId,
+            allowanceAmount: item.allowanceAmount,
+            balance: item.balance,
+            dayPreference: item.dayPreference,
+            primaryKiddo: item.primaryKiddo
+        }));
+
         return createResponse(origin, {
             statusCode: 201,
-            body: {newUser: user}
+            body: users
         });
+
     } catch (error) {
         if (error.code === "ConditionalCheckFailedException") {
             return createResponse(origin, {
